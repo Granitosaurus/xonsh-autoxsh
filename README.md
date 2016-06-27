@@ -1,9 +1,9 @@
 # xonsh-autoxsh
-Xontrib for Xonsh that allows automatic executions scripts for directories in Xonsh Shell.
+Xontrib for Xonsh that allows automatic executions of xonsh scripts for specific directories.
 
 <hr>
 
-This extension automatically executes code in `.autoxsh` as xonsh code whenever you cd into a directory with it.
+This extension automatically executes code in `.autoxsh` as xonsh script whenever you cd into a directory that contains it.
 e.g.
 ```
 cd testing
