@@ -24,16 +24,16 @@ cd my_project
 ## Installation
 Just do a
 ```console
+pip install xonsh-autoxsh
+```
+
+or you can clone the repo with pip
+```console
 pip install git+https://github.com/Granitas/xonsh-autoxsh
 ```
 
-or you can clone the repo and do
-```console
-python setup.py install
-```
-
 ## Configuration
-To automatically load pacman completion at startup, put
+To automatically load autoxsh at startup, put
 ```console
 xontrib load autoxsh
 ```
