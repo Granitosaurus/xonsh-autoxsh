@@ -1,12 +1,12 @@
 #!/usr/bin/env xonsh
-from xonsh.dirstack import cd
+from xonsh.dirstack import cd as _cd
 import os
 
 AUTHORIZED_FILE = os.path.expanduser('~/.autoxonsh_authorized')
 IGNORE_FILE = os.path.expanduser('~/.autoxonsh_ignore')
 
 def auto_cd(args, stdin=None):
-    rtn = cd(args, stdin=stdin)
+    rtn = _cd(args, stdin=stdin)
     target = os.path.join(os.getcwd(), '.autoxsh')
     target = os.path.expanduser(target)
     is_envfile = os.path.isfile(target)
