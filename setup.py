@@ -1,4 +1,5 @@
-from distutils.core import setup
+# coding=utf-8
+from setuptools import setup
 
 setup(
     name='xonsh-autoxsh',
@@ -17,6 +18,7 @@ setup(
         'Intended Audience :: End Users/Desktop',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        "Programming Language :: Python :: 3.5",
         'Topic :: Desktop Environment',
         'Topic :: System :: Shells',
         'Topic :: System :: System Shells',
