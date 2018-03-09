@@ -1,16 +1,12 @@
-#!/usr/bin/env xonsh
-import os as _os
-_AUTHORIZED_FILE = _os.path.expanduser('~/.autoxonsh_authorized')
-_IGNORE_FILE = _os.path.expanduser('~/.autoxonsh_ignore')
-del _os
+import os
+_AUTHORIZED_FILE = os.path.expanduser('~/.autoxonsh_authorized')
+_IGNORE_FILE = os.path.expanduser('~/.autoxonsh_ignore')
 
 @events.on_chdir
-def _auto_cd(olddir, newdir, **kw):
-    import os as _os
-    target = _os.path.join(newdir, '.autoxsh')
-    target = _os.path.expanduser(target)
-    has_envfile = _os.path.isfile(target)
-    del _os
+def auto_cd(olddir, newdir, **kw):
+    target = os.path.join(newdir, '.autoxsh')
+    target = os.path.expanduser(target)
+    has_envfile = os.path.isfile(target)
     if not has_envfile:
         return
     # Deal with authorization
@@ -40,3 +36,6 @@ def _auto_cd(olddir, newdir, **kw):
                 ignore_file.write('{}\n'.format(target))
     if authorized:
         source @(target)
+
+__all__ = ()
+__version__ = 0.3
