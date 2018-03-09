@@ -1,27 +1,27 @@
 #!/usr/bin/env xonsh
-from xonsh.dirstack import cd as _cd
+import os as _os
+_AUTHORIZED_FILE = _os.path.expanduser('~/.autoxonsh_authorized')
+_IGNORE_FILE = _os.path.expanduser('~/.autoxonsh_ignore')
+del _os
 
-import os
-_AUTHORIZED_FILE = os.path.expanduser('~/.autoxonsh_authorized')
-_IGNORE_FILE = os.path.expanduser('~/.autoxonsh_ignore')
-del os
-
-
-def _auto_cd(args, stdin=None):
-    import os
-    rtn = _cd(args, stdin=stdin)
-    target = os.path.join(os.getcwd(), '.autoxsh')
-    target = os.path.expanduser(target)
-    is_envfile = os.path.isfile(target)
-    if not is_envfile:
-        return rtn
+@events.on_chdir
+def _auto_cd(olddir, newdir, **kw):
+    import os as _os
+    target = _os.path.join(newdir, '.autoxsh')
+    target = _os.path.expanduser(target)
+    has_envfile = _os.path.isfile(target)
+    del _os
+    if not has_envfile:
+        return
     # Deal with authorization
     open(_AUTHORIZED_FILE, 'a').close()
     open(_IGNORE_FILE, 'a').close()
+    # check whether dir is ignored
     with open(_IGNORE_FILE, 'r') as ignore_file:
         for line in ignore_file.readlines():
             if target in line:
-                return rtn
+                return
+    # check whether dir is authorized
     authorized = False
     with open(_AUTHORIZED_FILE, 'r') as trust_file:
         for line in trust_file.readlines():
@@ -40,6 +40,3 @@ def _auto_cd(args, stdin=None):
                 ignore_file.write('{}\n'.format(target))
     if authorized:
         source @(target)
-    return rtn
-
-aliases['cd'] = _auto_cd

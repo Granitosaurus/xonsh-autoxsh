@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='xonsh-autoxsh',
-    version='0.2',
+    version='0.3',
     url='https://github.com/Granitas/xonsh-autoxsh',
     license='GPLv3',
     author='Bernardas Ališauskas',
