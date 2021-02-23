@@ -1,6 +1,6 @@
 import os
-_AUTHORIZED_FILE = os.path.expanduser('~/.autoxonsh_authorized')
-_IGNORE_FILE = os.path.expanduser('~/.autoxonsh_ignore')
+_AUTHORIZED_FILE = os.path.join(__xonsh__.env['XONSH_DATA_DIR'], 'xontrib_autoxsh_authorized.txt')
+_IGNORE_FILE = os.path.join(__xonsh__.env['XONSH_DATA_DIR'], 'xontrib_autoxsh_ignore.txt')
 
 @events.on_chdir
 def auto_cd(olddir, newdir, **kw):
@@ -25,8 +25,8 @@ def auto_cd(olddir, newdir, **kw):
                 authorized = True
                 break
     if not authorized:
-        msg = 'Unauthorized ".autoxsh" file found in this directory. Authorize and invoke? (y/n/ignore): '
-        to_authorize = input(msg).lower()
+        printx('{YELLOW}Unauthorized ".autoxsh" file found in this directory. Authorize and invoke? (y/n/ignore): {RESET}', end='')
+        to_authorize = input().lower()
         if "y" in to_authorize:
             authorized = True
             with open(_AUTHORIZED_FILE, 'a') as trust_file:
@@ -38,4 +38,4 @@ def auto_cd(olddir, newdir, **kw):
         source @(target)
 
 __all__ = ()
-__version__ = 0.3
+__version__ = 0.4
