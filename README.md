@@ -11,19 +11,40 @@ pip install xonsh-autoxsh
 echo 'xontrib load autoxsh' >> ~/.xonshrc
 ```
 
+## Autoxsh files
+
+- `.autoxsh` - executed after entering a directory
+- `.enter.xsh` - same as `.autoxsh` but with `.xsh` extension
+- `.leave.xsh` - executed after leaving a directory
+
+Execution order: `(olddir)/.leave.xsh`, `(newdir)/.autoxsh`, `(newdir)/.enter.xsh`.
+
 ## Use cases
 
 ### Run xonsh script after entering (cd-ing) into the directory
 
 ```python
 mkdir -p /tmp/dir
-echo "print('it works!')" > /tmp/dir/.autoxsh
+echo "print('it works!')" > /tmp/dir/.enter.xsh
 cd /tmp/dir
-# Unauthorized ".autoxsh" file found in this directory. Authorize and invoke? (y/n/ignore): y
+# Unauthorized ".enter.xsh" file found in this directory. Authorize and invoke? (y/n/ignore): y
 # it works!
 cd /
 cd /tmp/dir
 # it works!
+```
+
+### Run xonsh script after leaving a directory
+
+```python
+echo "print('bye!')" > /tmp/dir/.leave.xsh
+cd /tmp/dir
+cd /
+# Unauthorized ".leave.xsh" file found in this directory. Authorize and invoke? (y/n/ignore): y
+# bye!
+cd /tmp/dir
+cd /
+# bye!
 ```
 
 ### Activate Python virtual environment with vox
@@ -32,7 +53,7 @@ cd /tmp/dir
 xontrib load vox
 vox new myenv
 mkdir -p /tmp/dir
-echo "vox activate myenv" > /tmp/dir/.autoxsh
+echo "vox activate myenv" > /tmp/dir/.enter.xsh
 cd /tmp/dir
 # Activated "myenv".
 ```
