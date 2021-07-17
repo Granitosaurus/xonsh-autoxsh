@@ -2,7 +2,7 @@
 
 Automatically execution of `.autoxsh` xonsh script after entering (cd-ing) into the directory.
 
-[![PyPi version](https://img.shields.io/pypi/v/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh) [![PyPi license](https://img.shields.io/pypi/l/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh) [![PyPi license](https://img.shields.io/pypi/pyversions/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh)  
+[![PyPi version](https://img.shields.io/pypi/v/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh) [![PyPi license](https://img.shields.io/pypi/l/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh) [![Python version](https://img.shields.io/pypi/pyversions/xonsh-autoxsh.svg?style=flat-square)](https://pypi.python.org/pypi/xonsh-autoxsh)  
 
 ## Installation
 ```python
@@ -18,6 +18,11 @@ echo 'xontrib load autoxsh' >> ~/.xonshrc
 - `.leave.xsh` - executed after leaving a directory
 
 Execution order: `(olddir)/.leave.xsh`, `(newdir)/.autoxsh`, `(newdir)/.enter.xsh`.
+
+## Environment variables
+
+- `$AXSH_CHECK_PARENTS` - enable checking the parents of the old / new directory for leave / enter files
+- `$AXSH_DEBUG` - prints debug information
 
 ## Use cases
 
@@ -58,6 +63,26 @@ echo "vox activate myenv" > /tmp/dir/.enter.xsh
 cd /tmp/dir
 # Activated "myenv".
 ```
+
+### Parent check mode
+
+```python
+mkdir -p /tmp/dir1/sdir1
+mkdir -p /tmp/dir2
+echo "hello dir1" > /tmp/dir1/.enter.xsh
+echo "bye dir1" > /tmp/dir1/.leave.xsh
+echo "hello sdir1" > /tmp/dir1/sdir1/.enter.xsh
+echo "hello dir2" > /tmp/dir1/.erter.xsh
+cd /tmp/dir1/sdir1
+# (authorization ignored)
+# hello dir1
+# hello sdir1
+cd /tmp/dir2
+# bye dir1
+# hello dir2
+```
+
+Please note that `.autoxsh` is ignored in parent check mode, only `.enter.xsh` and `.leave.xsh` scripts are executed.
 
 ## Links 
 * This package is the part of [ergopack](https://github.com/anki-code/xontrib-ergopack) - the pack of ergonomic xontribs.

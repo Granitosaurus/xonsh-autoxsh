@@ -1,23 +1,56 @@
 import os
+from pathlib import Path
 _AUTHORIZED_FILE = os.path.join(__xonsh__.env['XONSH_DATA_DIR'], 'xontrib_autoxsh_authorized.txt')
 _IGNORE_FILE = os.path.join(__xonsh__.env['XONSH_DATA_DIR'], 'xontrib_autoxsh_ignore.txt')
+_ENTER_FILE = '.enter.xsh'
+_LEAVE_FILE = '.leave.xsh'
+
+
+# create auth / ignore files
+open(_AUTHORIZED_FILE, 'a').close()
+open(_IGNORE_FILE, 'a').close()
 
 
 @events.on_chdir
 def auto_cd(olddir, newdir, **kw):
-    for tdir, file in [(olddir, '.leave.xsh'), (newdir, '.autoxsh'), (newdir, '.enter.xsh')]:
+    olddir = Path(olddir).expanduser().resolve()
+    newdir = Path(newdir).expanduser().resolve()
+    commonpath = Path(os.path.commonpath([olddir, newdir]))
+
+    tlist = []
+
+    if __xonsh__.env.get('AXSH_CHECK_PARENTS', False):
+        # directories left
+        if olddir > commonpath:
+            tlist += [(olddir, _LEAVE_FILE)]
+
+        tlist += [(parent, _LEAVE_FILE) for parent in olddir.parents if parent > commonpath]
+
+        # directories entered
+        tlist += [(parent, _ENTER_FILE) for parent in reversed(newdir.parents) if parent > commonpath]
+
+        if newdir > commonpath:
+            tlist += [(newdir, _ENTER_FILE)]
+    else:
+        tlist += [(olddir, _LEAVE_FILE), (newdir, '.autoxsh'), (newdir, _ENTER_FILE)]
+
+    for tdir, file in tlist:
         run_script(tdir, file)
 
 
 def run_script(tdir, file):
-    target = os.path.join(tdir, file)
-    target = os.path.expanduser(target)
+    debug = __xonsh__.env.get('AXSH_DEBUG', False)
+
+    target = tdir / file
+
+    if debug:
+        printx(f'{{YELLOW}}[axsh]{{RESET}} checking file: {target}')
+
     if not os.path.isfile(target):
         return
 
-    # deal with authorization
-    open(_AUTHORIZED_FILE, 'a').close()
-    open(_IGNORE_FILE, 'a').close()
+    if debug:
+        printx(f'{{YELLOW}}[axsh]{{RESET}} ... file found')
 
     # check whether dir is ignored
     with open(_IGNORE_FILE, 'r') as ignore_file:
@@ -29,12 +62,12 @@ def run_script(tdir, file):
     authorized = False
     with open(_AUTHORIZED_FILE, 'r') as trust_file:
         for line in trust_file.readlines():
-            if target in line:
+            if str(target) in line:
                 authorized = True
                 break
 
     if not authorized:
-        printx(f'{{YELLOW}}Unauthorized "{file}" file found in this directory. Authorize and invoke? (y/n/ignore): {{RESET}}', end='')
+        printx(f'{{BRIGHT_YELLOW}}[axsh]{{RESET}} Unauthorized "{{BRIGHT_RED}}{file}{{RESET}}" file found in this directory. Authorize and invoke? (y/n/ignore): ', end='')
         to_authorize = input().lower()
         if "y" in to_authorize:
             authorized = True
@@ -45,6 +78,8 @@ def run_script(tdir, file):
                 ignore_file.write('{}\n'.format(target))
 
     if authorized:
+        if debug:
+            printx(f'{{YELLOW}}[axsh]{{RESET}} executing')
         source @(target)
 
 

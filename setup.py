@@ -18,9 +18,9 @@ setup(
         'Intended Audience :: End Users/Desktop',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         'Topic :: Desktop Environment',
         'Topic :: System :: Shells',
         'Topic :: System :: System Shells',
-]
+    ]
 )
