@@ -37,6 +37,7 @@ cd /tmp/dir
 ### Run xonsh script after leaving a directory
 
 ```python
+mkdir -p /tmp/dir
 echo "print('bye!')" > /tmp/dir/.leave.xsh
 cd /tmp/dir
 cd /
