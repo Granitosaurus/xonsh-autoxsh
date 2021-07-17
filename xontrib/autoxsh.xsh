@@ -67,7 +67,7 @@ def run_script(tdir, file):
                 break
 
     if not authorized:
-        printx(f'{{BRIGHT_YELLOW}}[axsh]{{RESET}} Unauthorized "{{BRIGHT_RED}}{file}{{RESET}}" file found in this directory. Authorize and invoke? (y/n/ignore): ', end='')
+        printx(f'{{INTENSE_YELLOW}}[axsh]{{RESET}} Unauthorized "{{INTENSE_RED}}{file}{{RESET}}" file found in this directory. Authorize and invoke? (y/n/ignore): ', end='')
         to_authorize = input().lower()
         if "y" in to_authorize:
             authorized = True
